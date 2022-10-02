@@ -1,13 +1,13 @@
 {
-  "name": "earth",
+  "name": "visearth",
   "description": "Earth",
   "version": "0.0.1",
   "private": true,
-  "author": "Cameron Beccario <cambecc@nullschool.net>",
-  "homepage": "https://github.com/cambecc/earth",
+  "author": "Paara Team",
+  "homepage": "https://github.com/linushahs/VisEarth",
   "repository": {
     "type": "git",
-    "url": "git://github.com/cambecc/earth.git"
+    "url": "git://github.com/linushahs/VisEarth.git"
   },
   "engine": "node >= 0.10.21",
   "dependencies": {
