@@ -81,6 +81,27 @@ function getReqData(id, weatherData) {
   return arr;
 }
 
+//Get the label function
+function getLabel(id) {
+  let label;
+  if (id == "max-temp" || id == "min-temp") {
+    label = "Temperature";
+  } else if (id == "max-ptemp" || id == "min-ptemp") {
+    label = "Perceived Temperature";
+  } else if (id == "prec") {
+    label = "Precipitation";
+  } else if (id == "snow-rate") {
+    label = "Snowfall Rate";
+  } else if (id == "wind-speed") {
+    label = "Wind Speed";
+  } else if (id == "wind-gusts") {
+    label = "Wind Gusts";
+  } else if (id == "wind-dir") {
+    label = "Wind Direction";
+  }
+  return label;
+}
+
 //Onclick functionality of button
 btns.forEach((btn) => {
   btn.onclick = async (e) => {
@@ -97,8 +118,9 @@ btns.forEach((btn) => {
     const arr = getReqData(id, weatherData);
 
     tempData = [...arr];
-    showLineChart();
-    showBarChart();
+    let label = getLabel(id);
+    showLineChart(label);
+    showBarChart(label);
   };
 });
 
@@ -114,12 +136,12 @@ const labelsOfLC = [
   "Saturday",
 ];
 
-function showLineChart() {
+function showLineChart(lbl = "Temperature") {
   const data1 = {
     labels: labelsOfLC,
     datasets: [
       {
-        label: "Temperature",
+        label: lbl,
         backgroundColor: "#ff7551",
         borderColor: "#353340",
         data: tempData,
@@ -138,14 +160,12 @@ function showLineChart() {
 
 // For bar chart
 // ****************************************************************
-const labelsOfBC = ["January", "Febraury", "March", "April", "June", "July"];
-
-function showBarChart() {
+function showBarChart(lbl = "Temperature") {
   const data2 = {
     labels: labelsOfLC,
     datasets: [
       {
-        label: "Temperature Dataset",
+        label: lbl,
         data: tempData,
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
@@ -192,11 +212,13 @@ const lon = document.getElementById("longitude");
 searchBtn.onclick = async () => {
   const weatherData = await getWeather(lat.value, lon.value);
   const selectedElem = document.querySelector(".sidebar-link.is-active");
-  console.log(selectedElem);
 
   resetCanvas();
   const data = getReqData(selectedElem.id, weatherData);
   tempData = [...data];
-  showLineChart();
-  showBarChart();
+
+  //Get the label of data set
+  let label = getLabel(selectedElem.id);
+  showLineChart(label);
+  showBarChart(label);
 };
