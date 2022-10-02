@@ -8,7 +8,7 @@ earth
 A customized instance of "earth" is available at http://earth.nullschool.net.
 
 "earth" is a personal project I've used to learn javascript and browser programming, and is based on the earlier
-[Tokyo Wind Map](https://github.com/cambecc/air) project.  Feedback and contributions are welcome! ...especially
+[Tokyo Wind Map](https://github.com/linushahs/VisEarth) project.  Feedback and contributions are welcome! ...especially
 those that clarify accepted best practices.
 
 building and launching
@@ -16,7 +16,7 @@ building and launching
 
 After installing node.js and npm, clone "earth" and install dependencies:
 
-    git clone https://github.com/cambecc/earth
+    git clone https://github.com/linushahs/VisEarth
     cd earth
     npm install
 
