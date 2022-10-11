@@ -1,15 +1,14 @@
-earth
+VisEarth
 =====
 
-**NOTE: the location of `dev-server.js` has changed from `{repository}/server/` to `{repository}/`**
+"VisEarth" is a project to visualize global weather conditions.
 
-"earth" is a project to visualize global weather conditions.
+***unupdated version can be found at http://earth.nullschool.net.***
 
-A customized instance of "earth" is available at http://earth.nullschool.net.
+VisEarth extends on the open-source Earth project from “Null School”. Earth provides a 3d model of the Earth and overlays it with color-coded maps to visualize temperature, wind, and similar weather data. However, upon thorough brainstorming and a brief survey, our team realized that the app doesn’t provide any productive use of the data. Hence, we developed VisEarth. It fetches the data from weather APIs while also using the ones already being used in the “Earth” (referring to the app we have extended). In addition, we have equipped VisEarth with visualization tools so that users can draw better insights by analyzing historical trends of various weather data types.
+ 
+Moreover, our visualization tools are dynamic and updated according to user requirements. 
 
-"earth" is a personal project I've used to learn javascript and browser programming, and is based on the earlier
-[Tokyo Wind Map](https://github.com/linushahs/VisEarth) project.  Feedback and contributions are welcome! ...especially
-those that clarify accepted best practices.
 
 building and launching
 ----------------------
@@ -35,56 +34,14 @@ weather layer located at `data/weather/current`.
 
 *For Ubuntu, Mint, and elementary OS, use `nodejs` instead of `node` instead due to a [naming conflict](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint-elementary-os).
 
-getting map data
+How does it work?
 ----------------
 
-Map data is provided by [Natural Earth](http://www.naturalearthdata.com) but must be converted to
-[TopoJSON](https://github.com/mbostock/topojson/wiki) format. We make use of a couple different map scales: a
-simplified, larger scale for animation and a more detailed, smaller scale for static display. After installing
-[GDAL](http://www.gdal.org/) and TopoJSON (see [here](http://bost.ocks.org/mike/map/#installing-tools)), the
-following commands build these files:
+Upon opening our software, a user sees a globe color-coded and animated according to the weather data. Now, the user can either click on any point of the globe or manually latitude, longitude, and time frame for data visualization. After submitting the values, a bar graph and line graph will be generated, which will be available for download.
+A JavaScript code available in the GitHub repository generates the 3D globe. It uses Space Agencies data and converts it into a custom extension (.epax) for easier overlaying around the 3D globe. For Graphical Visualization, the same data is used for some instances. Elsewise, the data is fetched from a free and open-source API endpoint mentioned in the resources section below. Finally, the GET request is sent according to the user-input values, and the Graphs are rendered.
 
-    curl "http://www.nacis.org/naturalearth/50m/physical/ne_50m_coastline.zip" -o ne_50m_coastline.zip
-    curl "http://www.nacis.org/naturalearth/50m/physical/ne_50m_lakes.zip" -o ne_50m_lakes.zip
-    curl "http://www.nacis.org/naturalearth/110m/physical/ne_110m_coastline.zip" -o ne_110m_coastline.zip
-    curl "http://www.nacis.org/naturalearth/110m/physical/ne_110m_lakes.zip" -o ne_110m_lakes.zip
-    unzip -o ne_\*.zip
-    ogr2ogr -f GeoJSON coastline_50m.json ne_50m_coastline.shp
-    ogr2ogr -f GeoJSON coastline_110m.json ne_110m_coastline.shp
-    ogr2ogr -f GeoJSON -where "scalerank < 4" lakes_50m.json ne_50m_lakes.shp
-    ogr2ogr -f GeoJSON -where "scalerank < 2 AND admin='admin-0'" lakes_110m.json ne_110m_lakes.shp
-    ogr2ogr -f GeoJSON -simplify 1 coastline_tiny.json ne_110m_coastline.shp
-    ogr2ogr -f GeoJSON -simplify 1 -where "scalerank < 2 AND admin='admin-0'" lakes_tiny.json ne_110m_lakes.shp
-    topojson -o earth-topo.json coastline_50m.json coastline_110m.json lakes_50m.json lakes_110m.json
-    topojson -o earth-topo-mobile.json coastline_110m.json coastline_tiny.json lakes_110m.json lakes_tiny.json
-    cp earth-topo*.json <earth-git-repository>/public/data/
 
-getting weather data
---------------------
 
-Weather data is produced by the [Global Forecast System](http://en.wikipedia.org/wiki/Global_Forecast_System) (GFS),
-operated by the US National Weather Service. Forecasts are produced four times daily and made available for
-download from [NOMADS](http://nomads.ncep.noaa.gov/). The files are in [GRIB2](http://en.wikipedia.org/wiki/GRIB)
-format and contain over [300 records](http://www.nco.ncep.noaa.gov/pmb/products/gfs/gfs.t00z.pgrbf00.grib2.shtml).
-We need only a few of these records to visualize wind data at a particular isobar. The following commands download
-the 1000 hPa wind vectors and convert them to JSON format using the [grib2json](https://github.com/cambecc/grib2json)
-utility:
-
-    YYYYMMDD=<a date, for example: 20140101>
-    curl "http://nomads.ncep.noaa.gov/cgi-bin/filter_gfs.pl?file=gfs.t00z.pgrb2.1p00.f000&lev_10_m_above_ground=on&var_UGRD=on&var_VGRD=on&dir=%2Fgfs.${YYYYMMDD}00" -o gfs.t00z.pgrb2.1p00.f000
-    grib2json -d -n -o current-wind-surface-level-gfs-1.0.json gfs.t00z.pgrb2.1p00.f000
-    cp current-wind-surface-level-gfs-1.0.json <earth-git-repository>/public/data/weather/current
-
-font subsetting
----------------
-
-This project uses [M+ FONTS](http://mplus-fonts.sourceforge.jp/). To reduce download size, a subset font is
-constructed out of the unique characters utilized by the site. See the `earth/server/font/findChars.js` script
-for details. Font subsetting is performed by the [M+Web FONTS Subsetter](http://mplus.font-face.jp/), and
-the resulting font is placed in `earth/public/styles`.
-
-[Mono Social Icons Font](http://drinchev.github.io/monosocialiconsfont/) is used for scalable, social networking
-icons. This can be subsetted using [Font Squirrel's WebFont Generator](http://www.fontsquirrel.com/tools/webfont-generator).
 
 implementation notes
 --------------------
